@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">Live Analytics Dashboard</h2>
+
+    <div class="dashboard-grid">
+        <div class="stat-card">
+            <h2>Total Students Registered</h2>
+            <p>{{ total_students }}</p>
+        </div>
+        <div class="stat-card">
+            <h2>Students Present</h2>
+            <p>{{ students_present }}</p>
+        </div>
+        <div class="stat-card">
+            <h2>Total Parents Present</h2>
+            <p>{{ total_parents }}</p>
+        </div>
+        <div class="stat-card">
+            <h2>Overall Attendance</h2>
+            <p>{{ attendance_rate }}%</p>
+        </div>
+    </div>
+
+    <a href="/" class="back-link">← Logout / Back to Search Terminal</a>
+{% endblock %}

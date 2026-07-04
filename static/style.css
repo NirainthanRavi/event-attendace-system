@@ -1,0 +1,233 @@
+/* --- 1. BASIC RESET & BODY LAYOUT --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #eff9ff; /* Light, clean background */
+    color: #333333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Allows the footer to stick to the bottom */
+}
+
+/* --- 2. HEADER & FOOTER --- */
+.main-header {
+    background-color: #ffffff; /* Deep blue from your image */
+    color: #ffffff;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers the text block perfectly */
+    position: relative; /* Required for the absolute positioning of the logo */
+    border-bottom: #123470 4px solid; /* Adds a subtle bottom border for separation */
+}
+
+.main-header .logo1 {
+    position: absolute;
+    left: 0px; /* Pins the logo to the far left */
+    height: 75px; /* Forces the image to a reasonable header size */
+    width: auto;
+}
+
+.main-header .logo2 {
+    position: absolute;
+    right: 0px; /* Pins the logo to the far right */
+    height: 75px; /* Forces the image to a reasonable header size */
+    width: auto;
+}
+
+.header-text {
+    text-align:center;
+}
+
+.header-text h1 {
+    margin: 0;
+    font-size: 26px;
+    color: #123470;
+    letter-spacing: 1px;
+}
+
+.header-text h2 {
+    margin: 5px 0 0 0;
+    font-size: 16px;
+    color: #123470;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+.main-footer {
+    background-color: #123470;
+    color: #ffffff;
+    text-align: center;
+    margin-top: auto; /* Pushes the footer to the bottom of the screen */
+    font-size: 13px;
+    padding: 15px;
+    width: 100%;
+}
+
+/* --- 3. MAIN CONTENT WRAPPER --- */
+.content {
+    flex: 1; /* Fills the space between header and footer */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.page-title {
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #004b87; /* SRM Blue */
+}
+
+/* --- 4. FORMS & RESULT BOXES --- */
+form, .result-box, .error-message {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    border-top: 4px solid #004b87;
+}
+
+label {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555555;
+    font-weight: 500;
+}
+
+input[type="text"], input[type="password"], select {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #333333;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+input:focus, select:focus {
+    border-color: #004b87;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* --- 5. BUTTONS & LINKS --- */
+button {
+    padding: 12px;
+    background-color: #004b87;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #003666;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.back-link {
+    color: #004b87;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 20px;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #003666;
+}
+
+.admin-link {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #888888;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.admin-link:hover {
+    color: #004b87;
+}
+
+/* --- 6. SPECIFIC TEXT STYLING --- */
+.result-box p {
+    margin-bottom: 10px;
+    color: #555555;
+}
+
+.result-box strong {
+    color: #333333;
+}
+
+.error-message {
+    color: #d9534f;
+    border-top: 4px solid #d9534f;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* --- 7. ADMIN DASHBOARD GRID --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background-color: #ffffff;
+    padding: 25px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    border-top: 4px solid #004b87;
+}
+
+.stat-card h2 {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card p {
+    font-size: 32px;
+    font-weight: bold;
+    color: #004b87;
+    margin: 0;
+}

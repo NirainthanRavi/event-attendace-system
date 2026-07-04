@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">Admin Login</h2>
+
+    <form action="/dashboard" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">View Dashboard</button>
+    </form>
+
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% endif %}
+
+    <a href="/" class="back-link">← Back to Search</a>
+{% endblock %}

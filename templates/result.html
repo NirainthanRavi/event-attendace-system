@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Search Result{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">Search Result</h2>
+
+    {% if data %}
+        <div class="result-box">
+            <p><strong>Name:</strong> {{ data.name }}</p>
+            <p><strong>Room Number:</strong> {{ data.room_number }}</p>
+            <p><strong>Seat Number:</strong> {{ data.seat_number }}</p>
+            <p><strong>Additional Members:</strong> {{ data.parent_count }}</p>
+        </div>
+    {% else %}
+        <p class="error-message">No match found in the database.</p>
+    {% endif %}
+
+    <a href="/" class="back-link">← Back to Search</a>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Search Terminal{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">Database Lookup</h2>
+
+    <form action="/search" method="POST">
+        <label for="phone_number">Enter Mobile Number:</label>
+        <input type="text" id="phone_number" name="phone_number" required placeholder="e.g. 9019938000">
+
+        <label for="dob">Enter Date of Birth (dd/mm/yyyy):</label>
+        <input type="text" id="dob" name="dob" required placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}">
+        
+        <!-- NEW: Department Selection -->
+        <label for="dept">Select Department:</label>
+        <select id="dept" name="dept" required>
+            <option value="" disabled selected>Select your department</option>
+            <option value="BCA">BCA</option>
+            <option value="B.Sc">B.Sc</option>
+        </select>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="has_members" name="has_members">
+            <label for="has_members" style="margin-bottom: 0;">Is there members accompanying you?</label>
+        </div>
+
+        <div id="members_dropdown" style="display: none;">
+            <label for="member_count">Number of accompanying members:</label>
+            <select id="member_count" name="member_count">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+
+        <button type="submit">Search</button>
+    </form>
+
+    <a href="/dashboard" class="admin-link">Admin Dashboard</a>
+
+    <script>
+        const checkbox = document.getElementById('has_members');
+        const dropdownDiv = document.getElementById('members_dropdown');
+        checkbox.addEventListener('change', function() {
+            dropdownDiv.style.display = this.checked ? 'block' : 'none'; 
+        });
+    </script>
+{% endblock %}
