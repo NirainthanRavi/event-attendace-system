@@ -15,21 +15,18 @@ try:
 except Exception as e:
     print(f"Index setup warning: {e}")
 
-# --- INDUCTION FLOW ROUTES ---
+#INDUCTION FLOW ROUTES
 @app.route('/')
 def home():
-    """The starting induction splash screen."""
     return render_template('index.html')
 
 @app.route('/instructions')
 def instructions():
-    """The instructions screen before check-in."""
     return render_template('instructions.html')
 
 # --- MAIN APP ROUTES ---
 @app.route('/checkin')
 def checkin():
-    """The main check-in terminal (formerly index.html)."""
     return render_template('checkin.html')
 
 @app.route('/search', methods=['POST'])
