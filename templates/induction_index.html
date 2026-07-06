@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#0B0E1A"/>
+  <title>Welcome – SRM Induction 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <!-- Linking to the unified stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="induction-page">
+<div id="overlay"></div>
+<div class="accent-line"></div>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="grain"></div>
+<div class="particles">
+  <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+</div>
+
+<div class="page">
+  <div class="chip">Induction Day &middot; 2026</div>
+
+  <div class="logo-wrap">
+    <div class="logo-glow"></div>
+    <div class="logo-ring"></div>
+    <img src="{{ url_for('static', filename='srm-logo.jpg') }}" alt="SRM Institute of Science and Technology" class="logo-img"/>
+  </div>
+
+  <div class="college">
+    <div class="college-name">SRM Institute of Science &amp; Technology</div>
+    <div class="college-loc">Vadapalani &middot; Chennai</div>
+  </div>
+
+  <div class="sep">
+    <span class="sep-line"></span>
+    <span class="sep-dot"></span>
+    <span class="sep-line r"></span>
+  </div>
+
+  <div class="hero">
+    <div class="clip c1"><span class="inner welcome">Welcome,</span></div>
+    <div class="clip c2"><span class="inner freshers">Freshers!</span></div>
+    <div class="sub">We've been waiting for you &#10024;</div>
+  </div>
+
+  <div class="tap">
+    <div class="tap-circle">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(241,245,249,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <span class="tap-text">Tap anywhere</span>
+  </div>
+</div>
+
+<script>
+  function ripple(x, y) {
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    r.style.left = x + 'px';
+    r.style.top = y + 'px';
+    document.body.appendChild(r);
+    r.addEventListener('animationend', () => r.remove());
+  }
+
+  let gone = false;
+  function go(x, y) {
+    if (gone) return;
+    gone = true;
+    ripple(x, y);
+    document.getElementById('overlay').classList.add('on');
+    setTimeout(() => { window.location.href = "{{ url_for('instructions') }}"; }, 480);
+  }
+
+  document.addEventListener('click', e => go(e.clientX, e.clientY));
+  document.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    go(t.clientX, t.clientY);
+  }, { passive: true });
+</script>
+</body>
+</html>

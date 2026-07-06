@@ -15,5 +15,5 @@
         <p class="error-message">No match found in the database.</p>
     {% endif %}
 
-    <a href="/" class="back-link">← Back to Search</a>
+    <a href="{{ url_for('checkin') }}" class="back-link">← Back to Search</a>
 {% endblock %}

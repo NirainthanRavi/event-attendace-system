@@ -18,5 +18,5 @@
         <p class="error-message">{{ error }}</p>
     {% endif %}
 
-    <a href="/" class="back-link">← Back to Search</a>
+    <a href="{{ url_for('checkin') }}" class="back-link">← Back to Search</a>
 {% endblock %}

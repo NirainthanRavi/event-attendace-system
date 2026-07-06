@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>{% block title %}Attendance System{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header class="main-header">
-        <img src="{{ url_for('static', filename='SRM logo.png') }}" class="logo1">
-        <img src="{{ url_for('static', filename='logo2.png') }}" class="logo2">        
-        <!-- Group the text together -->
-        <div class="header-text">
+        <!-- Left Logo -->
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='SRM logo.png') }}" alt="SRM Logo" class="logo">
+        </div>
+        
+        <!-- Center Text -->
+        <div class="header-center">
             <h1>SRM Institute of Science and Technology, Vadapalani</h1>
             <h2>Faculty of Liberal Arts and Business Studies</h2>
+        </div>
+
+        <!-- Right Logo -->
+        <div class="header-right">
+            <img src="{{ url_for('static', filename='logo2.png') }}" alt="Secondary Logo" class="logo">
         </div>
     </header>
 

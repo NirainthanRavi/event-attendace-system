@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#0B0E1A"/>
+  <title>Instructions – SRM Induction 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Linking to the unified stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="induction-page instructions-page">
+<div id="overlay"></div>
+<div class="accent-line"></div>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="grain"></div>
+
+<div class="page">
+  <div class="induction-header">
+    <div class="hdr-left">
+      <img src="{{ url_for('static', filename='srm-logo.jpg') }}" alt="SRM" class="hdr-logo"/>
+      <div class="hdr-info">
+        <div class="hdr-name">SRM IST</div>
+        <div class="hdr-sub">Vadapalani, Chennai</div>
+      </div>
+    </div>
+    <span class="induction-badge">Read this</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-label">Before you register</div>
+    <div class="hero-title">What you need to <em>know</em></div>
+    <div class="hero-sub">Quick read &mdash; 15 seconds, promise!</div>
+  </div>
+
+  <div class="glass">
+    <div class="item">
+      <div class="item-icon ic-gold">📱</div>
+      <div class="item-body">
+        <div class="item-title">Your Registered Number</div>
+        <div class="item-desc">Enter the <strong>same number</strong> you shared in the college <span class="hl">WhatsApp group</span> at admission.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-icon ic-green">👨‍👩‍👦</div>
+      <div class="item-body">
+        <div class="item-title">Guests With You</div>
+        <div class="item-desc">How many people are <strong>with</strong> you? (parents, siblings, etc.) <strong>Don't count yourself.</strong></div>
+        <div class="guest-viz">
+          <div class="g-dot">👤</div>
+          <div class="g-dot">👤</div>
+          <div class="g-dot">👤</div>
+          <div class="g-dot">👤</div>
+          <span class="g-max">Max 4</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-icon ic-rose">🎂</div>
+      <div class="item-body">
+        <div class="item-title">Date of Birth</div>
+        <div class="item-desc">For verification &mdash; as per your <strong>college records</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice">
+    <span class="n-icon">💡</span>
+    <div class="n-text">After submitting, you'll see your <strong>seat &amp; floor number</strong>. Your guests will be directed to a <strong>separate waiting lounge</strong>.</div>
+  </div>
+
+  <div class="tap">
+    <div class="tap-row">
+      <span class="tap-text">Tap anywhere to continue</span>
+      <svg class="tap-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(241,245,249,0.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  function ripple(x, y) {
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    r.style.left = x + 'px';
+    r.style.top = y + 'px';
+    document.body.appendChild(r);
+    r.addEventListener('animationend', () => r.remove());
+  }
+
+  let gone = false;
+  let ready = false;
+  setTimeout(() => { ready = true; }, 1200);
+
+  function go(x, y) {
+    if (!ready || gone) return;
+    gone = true;
+    ripple(x, y);
+    document.getElementById('overlay').classList.add('on');
+    setTimeout(() => { window.location.href = "{{ url_for('checkin') }}"; }, 480);
+  }
+
+  document.addEventListener('click', e => go(e.clientX, e.clientY));
+  document.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    go(t.clientX, t.clientY);
+  }, { passive: true });
+</script>
+</body>
+</html>

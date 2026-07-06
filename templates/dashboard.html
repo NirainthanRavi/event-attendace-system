@@ -23,5 +23,40 @@
         </div>
     </div>
 
-    <a href="/" class="back-link">← Logout / Back to Search Terminal</a>
+    <h3 class="section-title">Department-Wise Analytics</h3>
+    <div class="table-container">
+        <table class="analytics-table">
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Registered</th>
+                    <th>Students Present</th>
+                    <th>Parents Present</th>
+                    <th>Attendance Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in dept_stats %}
+                <tr>
+                    <td><strong>{{ stat.dept }}</strong></td>
+                    <td>{{ stat.total_registered }}</td>
+                    <td>{{ stat.total_present }}</td>
+                    <td>{{ stat.parents_present }}</td>
+                    <td>
+                        <!-- Color codes the badge based on attendance percentage -->
+                        <span class="badge {% if stat.attendance_rate >= 75 %}badge-success{% elif stat.attendance_rate >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
+                            {{ stat.attendance_rate }}%
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">No department data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{{ url_for('checkin') }}" class="back-link"> Back to Search Terminal</a>
 {% endblock %}
