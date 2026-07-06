@@ -19,12 +19,12 @@ except Exception as e:
 @app.route('/')
 def home():
     """The starting induction splash screen."""
-    return render_template('induction_index.html')
+    return render_template('index.html')
 
 @app.route('/instructions')
 def instructions():
     """The instructions screen before check-in."""
-    return render_template('induction_instructions.html')
+    return render_template('instructions.html')
 
 # --- MAIN APP ROUTES ---
 @app.route('/checkin')
