@@ -10,7 +10,7 @@ users_collection = db["users"]
 
 # Apply Indexes for Performance
 try:
-    users_collection.create_index("dept")
+    # Removed the dept index as it is no longer needed
     users_collection.create_index([("mobile number", 1), ("DOB", 1)], unique=True)
 except Exception as e:
     print(f"Index setup warning: {e}")
@@ -33,7 +33,6 @@ def checkin():
 def search():
     phone_number = request.form.get('phone_number')
     dob = request.form.get('dob')
-    dept = request.form.get('dept') 
     has_members = request.form.get('has_members')  
     member_count = request.form.get('member_count')
 
@@ -41,7 +40,7 @@ def search():
     actual_members = int(member_count) if (has_members == 'on' and member_count) else 0
     parent_status_val = "PRESENT" if actual_members > 0 else "ABSENT"
 
-    query = {"DOB": db_dob, "dept": dept}
+    query = {"DOB": db_dob}
     
     match = users_collection.find_one({"mobile number": phone_number, **query})
     if not match and phone_number.isdigit():
@@ -59,16 +58,15 @@ def search():
             }}
         )
 
-    return redirect(url_for('result_page', phone=phone_number, dob=db_dob, dept=dept))
+    return redirect(url_for('result_page', phone=phone_number, dob=db_dob))
 
 @app.route('/result')
 def result_page():
     phone_number = request.args.get('phone')
     db_dob = request.args.get('dob')
-    dept = request.args.get('dept') 
     search_result = None
 
-    query = {"DOB": db_dob, "dept": dept}
+    query = {"DOB": db_dob}
 
     match = users_collection.find_one({"mobile number": phone_number, **query})
     if not match and phone_number.isdigit():

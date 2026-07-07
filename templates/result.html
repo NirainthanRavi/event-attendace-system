@@ -5,16 +5,23 @@
     <h2 class="page-title">Search Result</h2>
 
     {% if data %}
-        <div class="result-box">
+        <div class="result-box" style="border-top: 4px solid #004b87;">
             <p><strong>Name:</strong> {{ data.name }}</p>
             <p><strong>Room Number:</strong> {{ data.room_number }}</p>
             <p><strong>Seat Number:</strong> {{ data.seat_number }}</p>
             <p><strong>Additional Members:</strong> {{ data.parent_count }}</p>
-            <p><strong>Room assigned for accompaniment:</strong> ####</p>
+            <p><strong>Room assigned for accompaniment:</strong>401-405</p>
         </div>
+        <a href="{{ url_for('checkin') }}" class="back-link">← Back to Login</a>
     {% else %}
+        <div class="result-box" style="border-top: 4px solid #d9534f;">
         <p class="error-message">No match found in the database.</p>
+            <ul class = "error-list">
+                <li>Verify your phone number and date of birth.</li>
+                <li>Use your details from the "Induction Day Information Collection Form."</li>
+                <li>Click "Back to Instructions," read them carefully, and re-enter your data.</li>
+            </ul>
+        </div>
+        <a href="{{ url_for('instructions') }}" class="back-link">← Back to Instructions</a>
     {% endif %}
-
-    <a href="{{ url_for('checkin') }}" class="back-link">← Back to Search</a>
 {% endblock %}

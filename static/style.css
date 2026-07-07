@@ -23,8 +23,29 @@
 
 /* --- Standard Body (Check-in & Admin Apps) --- */
 body {
-    background-color: #e0f8ff;
-    color: #333333;
+   min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  
+  /* Flexbox layout to manage header and footer positioning */
+  display: flex;
+  flex-direction: column;
+
+  /* The Mesh Gradient */
+  background-color: #fdfdfd; /* Base warm white */
+  background-image: 
+    /* Top Right: Soft Periwinkle Blue */
+    radial-gradient(circle at 85% 15%, rgba(213, 214, 249, 0.8) 0%, transparent 45%),
+    
+    /* Bottom Left: Soft Warm Yellow */
+    radial-gradient(circle at 15% 85%, rgba(252, 239, 208, 0.8) 0%, transparent 55%),
+    
+    /* Center blending */
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.4) 0%, transparent 100%);
+    
+  /* Optional: Smooth background scaling */
+  background-size: cover;
+  background-repeat: no-repeat;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
@@ -54,7 +75,8 @@ body.induction-page {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 3px solid #123470;
+    border-top: 3px solid #C9A227;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 .header-left, .header-right {
     flex: 0 0 auto;
@@ -110,7 +132,7 @@ body.induction-page {
     color: #004b87;
     text-align: center;
 }
-form, .result-box, .error-message {
+form, .result-box{
     background-color: #ffffff;
     padding: 30px;
     border-radius: 8px;
@@ -119,8 +141,8 @@ form, .result-box, .error-message {
     flex-direction: column;
     width: 100%;
     max-width: 400px;
-    border-top: 4px solid #004b87;
 }
+
 label {
     margin-bottom: 10px;
     font-size: 14px;
@@ -190,11 +212,21 @@ button:active { transform: scale(0.98); }
 /* Specific Text & Results */
 .result-box p { margin-bottom: 10px; color: #555555; font-size: 16px; }
 .result-box strong { color: #333333; }
-.error-message {
+.result-box .error-message {
     color: #d9534f;
-    border-top: 4px solid #d9534f;
     text-align: center;
-    font-weight: 500;
+    text-decoration: underline;
+    font-weight: bolder;
+    font-size: 22px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.error-list {
+    color: #d9534f;
+    text-align: center;
+    font-weight: bold;
+    padding: 20px;
+    text-align: left;
 }
 
 /* Admin Dashboard Grid & Tables */
