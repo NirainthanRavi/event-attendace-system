@@ -1,21 +1,45 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
+from datetime import datetime
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 
-# Database Setup
+# --- DATABASE SETUP ---
+
+# Database 1: Main Application Database (Students)
 client = MongoClient("mongodb://localhost:27017/")
 db = client["flask_app_db"]
 users_collection = db["users"]
 
+# Database 2: Admin Authentication Database (Separate DB)
+admin_db = client["admin_auth_db"]
+admins_collection = admin_db["admins"]
+
 # Apply Indexes for Performance
 try:
-    # Removed the dept index as it is no longer needed
     users_collection.create_index([("mobile number", 1), ("DOB", 1)], unique=True)
+    admins_collection.create_index("username", unique=True)
 except Exception as e:
     print(f"Index setup warning: {e}")
 
-#INDUCTION FLOW ROUTES
+
+# --- INITIALIZATION FUNCTION ---
+def setup_default_admin():
+    """Checks if an admin user exists, and creates a default one if it doesn't."""
+    existing_admin = admins_collection.find_one({"username": "admin"})
+    
+    if not existing_admin:
+        # Create the default admin with a hashed password
+        hashed_pw = generate_password_hash("admin123")
+        admins_collection.insert_one({
+            "username": "admin",
+            "password_hash": hashed_pw
+        })
+        print("System Notice: Default 'admin' user created successfully.")
+
+
+# --- INDUCTION FLOW ROUTES ---
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -23,6 +47,7 @@ def home():
 @app.route('/instructions')
 def instructions():
     return render_template('instructions.html')
+
 
 # --- MAIN APP ROUTES ---
 @app.route('/checkin')
@@ -36,7 +61,15 @@ def search():
     has_members = request.form.get('has_members')  
     member_count = request.form.get('member_count')
 
-    db_dob = dob.replace('/', '-') if dob else None
+    # Convert incoming YYYY-MM-DD from HTML5 date picker to DD-MM-YYYY for the database
+    db_dob = None
+    if dob:
+        try:
+            date_obj = datetime.strptime(dob, '%Y-%m-%d')
+            db_dob = date_obj.strftime('%d-%m-%Y')
+        except ValueError:
+            db_dob = dob.replace('/', '-')
+
     actual_members = int(member_count) if (has_members == 'on' and member_count) else 0
     parent_status_val = "PRESENT" if actual_members > 0 else "ABSENT"
 
@@ -90,8 +123,12 @@ def dashboard():
         username = request.form.get('username')
         password = request.form.get('password')
         
-        if username == 'admin' and password == 'admin123':
-            # 1. Overall Stats
+        # --- SECURE DATABASE AUTHENTICATION ---
+        admin_user = admins_collection.find_one({"username": username})
+        
+        if admin_user and check_password_hash(admin_user['password_hash'], password):
+            
+            # --- 1. Overall Stats ---
             total_students = users_collection.count_documents({})
             students_present = users_collection.count_documents({"status": "PRESENT"})
             attendance_rate = round((students_present / total_students) * 100, 1) if total_students > 0 else 0
@@ -102,7 +139,7 @@ def dashboard():
             ]))
             total_parents = parent_agg[0]['total_parents'] if parent_agg else 0
 
-            # 2. Department-Wise Aggregation Pipeline
+            # --- 2. Department-Wise Aggregation Pipeline ---
             dept_pipeline = [
                 {
                     "$group": {
@@ -123,7 +160,7 @@ def dashboard():
             
             raw_dept_stats = list(users_collection.aggregate(dept_pipeline))
             
-            # 3. Format the department stats
+            # --- 3. Format the department stats ---
             dept_stats = []
             for d in raw_dept_stats:
                 dept_name = d["_id"] if d["_id"] else "Unknown"
@@ -147,9 +184,11 @@ def dashboard():
                                    attendance_rate=attendance_rate,
                                    dept_stats=dept_stats)
         else:
-            return render_template('login.html', error="Invalid credentials.")
+            return render_template('login.html', error="Invalid username or password.")
 
     return render_template('login.html')
 
 if __name__ == '__main__':
+    # Run the setup check right before starting the server
+    setup_default_admin()
     app.run(debug=True)

@@ -9,8 +9,9 @@
             <p><strong>Name:</strong> {{ data.name }}</p>
             <p><strong>Room Number:</strong> {{ data.room_number }}</p>
             <p><strong>Seat Number:</strong> {{ data.seat_number }}</p>
-            <p><strong>Additional Members:</strong> {{ data.parent_count }}</p>
-            <p><strong>Room assigned for accompaniment:</strong>401-405</p>
+            <p><strong>Additional Members:</strong> {{ data.parent_count }}(Fourth Floor)</p>
+            <p><strong>Room assigned for</strong></p>
+            <p><strong>guests:</strong>401-405(Fourth Floor)</p>
         </div>
         <a href="{{ url_for('checkin') }}" class="back-link">← Back to Login</a>
     {% else %}
