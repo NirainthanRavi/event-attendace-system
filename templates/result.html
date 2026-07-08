@@ -6,12 +6,19 @@
 
     {% if data %}
         <div class="result-box" style="border-top: 4px solid #004b87;">
-            <p><strong>Name:</strong> {{ data.name }}</p>
-            <p><strong>Room Number:</strong> {{ data.room_number }}</p>
-            <p><strong>Seat Number:</strong> {{ data.seat_number }}</p>
-            <p><strong>Additional Members:</strong> {{ data.parent_count }}(Fourth Floor)</p>
-            <p><strong>Room assigned for</strong></p>
-            <p><strong>guests:</strong>401-405(Fourth Floor)</p>
+            <p style="font-size: 22px; font-weight: bolder; color: #C9A227;">Information for Students:</p>
+            <p style="margin-left: 10px;"><strong>Name:</strong> {{ data.name }}</p>
+            <p style="margin-left: 10px;"><strong>Room Number:</strong> {{ data.room_number }}</p>
+            <p style="margin-left: 10px;"><strong>Seat Number:</strong> {{ data.seat_number }}</p>
+            <br>
+            <p style="font-size: 22px; font-weight: bolder; color: #C9A227;">Information for Guests:</p>
+            <p style="margin-left: 10px;"><strong>Number of Guests:</strong> {{ data.parent_count }}</p>
+            <p style="margin-left: 10px;"><strong>Rooms assigned for guests:</strong></p>
+            <ul style="margin-left: 40px;">
+                    <li><strong>Room no:</strong> 301-305 in C wing - Third Floor</li>
+                    <li><strong>Room no:</strong> 302-306 in D wing - Third Floor</li>
+            </ul>
+            <br>
         </div>
         <a href="{{ url_for('checkin') }}" class="back-link">← Back to Login</a>
     {% else %}
