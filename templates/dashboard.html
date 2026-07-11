@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Department Dashboard{% endblock %}
 
 {% block content %}
-    <h2 class="page-title">Live Analytics Dashboard</h2>
+    <h2 class="page-title" style="margin-bottom: 10px;">{{ current_view }} Dashboard</h2>
+    <p style="text-align: center; color: #8896AB; margin-bottom: 30px;">Live Attendance Roster</p>
 
     <div class="dashboard-grid">
         <div class="stat-card">
-            <h2>Total Students Registered</h2>
+            <h2>Total Students</h2>
             <p>{{ total_students }}</p>
         </div>
         <div class="stat-card">
@@ -14,49 +15,52 @@
             <p>{{ students_present }}</p>
         </div>
         <div class="stat-card">
-            <h2>Total Parents Present</h2>
+            <h2>Parents Present</h2>
             <p>{{ total_parents }}</p>
         </div>
         <div class="stat-card">
-            <h2>Overall Attendance</h2>
+            <h2>Attendance Rate</h2>
             <p>{{ attendance_rate }}%</p>
         </div>
     </div>
 
-    <h3 class="section-title">Department-Wise Analytics</h3>
+    <h3 class="section-title">Student Roster</h3>
     <div class="table-container">
         <table class="analytics-table">
             <thead>
                 <tr>
-                    <th>Department</th>
-                    <th>Registered</th>
-                    <th>Students Present</th>
-                    <th>Parents Present</th>
-                    <th>Attendance Rate</th>
+                    <th>Name</th>
+                    <th>Mobile Number</th>
+                    <th>Room</th>
+                    <th>Seat</th>
+                    <th>Guests</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                {% for stat in dept_stats %}
+                {% for student in student_list %}
                 <tr>
-                    <td><strong>{{ stat.dept }}</strong></td>
-                    <td>{{ stat.total_registered }}</td>
-                    <td>{{ stat.total_present }}</td>
-                    <td>{{ stat.parents_present }}</td>
+                    <td><strong>{{ student.get('name', 'Unknown') }}</strong></td>
+                    <td>{{ student.get('mobile number', 'N/A') }}</td>
+                    <td>{{ student.get('room number', 'N/A') }}</td>
+                    <td>{{ student.get('seat number', 'N/A') }}</td>
+                    <td>{{ student.get('parent count', 0) }}</td>
                     <td>
-                        <!-- Color codes the badge based on attendance percentage -->
-                        <span class="badge {% if stat.attendance_rate >= 75 %}badge-success{% elif stat.attendance_rate >= 50 %}badge-warning{% else %}badge-danger{% endif %}">
-                            {{ stat.attendance_rate }}%
-                        </span>
+                        {% if student.get('status') == 'PRESENT' %}
+                            <span class="badge badge-success">Present</span>
+                        {% else %}
+                            <span class="badge badge-danger" style="background-color: #8896AB;">Absent</span>
+                        {% endif %}
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" style="text-align: center;">No department data available.</td>
+                    <td colspan="6" style="text-align: center; padding: 20px;">No students found for this department.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <a href="{{ url_for('checkin') }}" class="back-link"> Back to Search Terminal</a>
+    <a href="{{ url_for('dashboard') }}" class="back-link"> Back to Login</a>
 {% endblock %}

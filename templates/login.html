@@ -5,18 +5,18 @@
     <h2 class="page-title">Admin Login</h2>
 
     <form action="/dashboard" method="POST">
-        <label for="username"><strong>Enter Username:</strong></label>
-        <input type="text" id="username" name="username" placeholder="Username" required>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
 
-        <label for="password"><strong>Enter Password:</strong></label>
-        <input type="password" id="password" name="password" placeholder="Password" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
 
         <button type="submit">View Dashboard</button>
     </form>
 
     {% if error %}
-        <p class="error-message">{{ error }}</p>
+        <p class="error-message" style="margin-top: 15px; text-align: center;">{{ error }}</p>
     {% endif %}
 
-    <a href="{{ url_for('checkin') }}" class="back-link">← Back to Search</a>
+    <a href="{{ url_for('checkin') }}" class="back-link" style="text-align: center; display: block;">← Back to Search</a>
 {% endblock %}
