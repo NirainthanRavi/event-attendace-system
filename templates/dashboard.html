@@ -12,7 +12,7 @@
         </div>
         <div class="stat-card">
             <h2>Students Present</h2>
-            <p>{{ students_present }}</p>
+            <p id="present-count">{{ students_present }}</p>
         </div>
         <div class="stat-card">
             <h2>Parents Present</h2>
@@ -48,6 +48,13 @@
                     <td>
                         {% if student.get('status') == 'PRESENT' %}
                             <span class="badge badge-success">Present</span>
+                            
+                        {% elif student.get('status') == 'CHECKED IN' %}
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span class="badge badge-warning" id="badge-{{ student._id_str }}">Checked In</span>
+                                <button onclick="verifyStudent('{{ student._id_str }}')" id="btn-{{ student._id_str }}" style="padding: 4px 8px; font-size: 11px; width: auto; margin: 0;">Verify</button>
+                            </div>
+                            
                         {% else %}
                             <span class="badge badge-danger" style="background-color: #8896AB;">Absent</span>
                         {% endif %}
@@ -63,4 +70,34 @@
     </div>
 
     <a href="{{ url_for('dashboard') }}" class="back-link"> Back to Login</a>
+
+    <script>
+        function verifyStudent(studentId) {
+            fetch(`/mark_present/${studentId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Turn the yellow badge into a green one
+                    const badge = document.getElementById(`badge-${studentId}`);
+                    badge.className = 'badge badge-success';
+                    badge.textContent = 'Present';
+                    
+                    // Hide the verify button
+                    const btn = document.getElementById(`btn-${studentId}`);
+                    btn.style.display = 'none';
+                    
+                    // Optional: You could write logic here to increment the "Students Present" counter visually!
+                } else {
+                    alert('Failed to update student status.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while verifying.');
+            });
+        }
+    </script>
 {% endblock %}

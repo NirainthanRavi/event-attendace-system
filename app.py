@@ -1,23 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from pymongo import MongoClient
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
+from bson.objectid import ObjectId # Added to handle MongoDB object IDs
 
 app = Flask(__name__)
 
 # --- DATABASE SETUP ---
-
 client = MongoClient("mongodb://localhost:27017/")
-
-# Database 1: Main Application Database (Students)
 db = client["flask_app_db"]
 users_collection = db["users"]
-
-# Database 2: Admin Authentication Database (Separate DB)
 admin_db = client["admin_auth_db"]
 admins_collection = admin_db["admins"]
 
-# Apply Indexes for Performance and Uniqueness
 try:
     users_collection.create_index([("mobile number", 1), ("DOB", 1)], unique=True)
     admins_collection.create_index("username", unique=True)
@@ -27,29 +22,26 @@ except Exception as e:
 
 # --- INITIALIZATION FUNCTION ---
 def setup_default_admin():
-    """Checks if a super admin user exists, and creates or patches it securely."""
     existing_admin = admins_collection.find_one({"username": "admin"})
     
     if not existing_admin:
-        # Create the default super admin if it doesn't exist at all
         hashed_pw = generate_password_hash("admin123")
         admins_collection.insert_one({
             "username": "admin",
             "password_hash": hashed_pw,
             "dept": "ALL" 
         })
-        print("\n--- System Notice: Default 'admin' user created successfully with 'ALL' access. ---")
+        print("\n--- System Notice: Default 'admin' user created successfully. ---")
     
     elif "dept" not in existing_admin:
-        # PATCH: If the admin exists but is missing the department field from the older version, fix it.
         admins_collection.update_one(
             {"username": "admin"}, 
             {"$set": {"dept": "ALL"}}
         )
-        print("\n--- System Notice: Existing 'admin' user patched with 'ALL' department access. ---")
+        print("\n--- System Notice: Existing 'admin' user patched. ---")
 
 
-# --- INDUCTION FLOW ROUTES ---
+# --- PUBLIC ROUTES ---
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -58,12 +50,12 @@ def home():
 def instructions():
     return render_template('instructions.html')
 
-
-# --- MAIN APP ROUTES ---
 @app.route('/checkin')
 def checkin():
     return render_template('checkin.html')
 
+
+# --- STUDENT SEARCH & CHECK-IN ---
 @app.route('/search', methods=['POST'])
 def search():
     phone_number = request.form.get('phone_number')
@@ -71,7 +63,6 @@ def search():
     has_members = request.form.get('has_members')  
     member_count = request.form.get('member_count')
 
-    # Convert incoming YYYY-MM-DD from HTML5 date picker to DD-MM-YYYY for the database
     db_dob = None
     if dob:
         try:
@@ -81,7 +72,6 @@ def search():
             db_dob = dob.replace('/', '-')
 
     actual_members = int(member_count) if (has_members == 'on' and member_count) else 0
-    parent_status_val = "PRESENT" if actual_members > 0 else "ABSENT"
 
     query = {"DOB": db_dob}
     
@@ -92,12 +82,12 @@ def search():
         match = users_collection.find_one({"mobile number": float(phone_number), **query})
 
     if match:
+        # Changed: Student is now marked as CHECKED IN, waiting for admin verification
         users_collection.update_one(
             {"_id": match["_id"]}, 
             {"$set": {
                 "parent count": actual_members,
-                "parent status": parent_status_val,
-                "status": "PRESENT"
+                "status": "CHECKED IN"
             }}
         )
 
@@ -108,7 +98,6 @@ def result_page():
     phone_number = request.args.get('phone')
     db_dob = request.args.get('dob')
     search_result = None
-
     query = {"DOB": db_dob}
 
     match = users_collection.find_one({"mobile number": phone_number, **query})
@@ -127,24 +116,19 @@ def result_page():
     
     return render_template('result.html', data=search_result)
 
+
+# --- SECURE ADMIN DASHBOARD ---
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         
-        # --- SECURE DATABASE AUTHENTICATION ---
-        # 1. Find the user by username only
         admin_user = admins_collection.find_one({"username": username})
         
-        # 2. Verify user exists AND the password matches the secure hash
         if admin_user and check_password_hash(admin_user['password_hash'], password):
-            
-            # 3. Extract the assigned department directly from the database
-            # Defaults to "ALL" just in case a legacy record is missing the field
             admin_dept = admin_user.get('dept', 'ALL')
             
-            # 4. Setup the database filter based on their assigned department
             db_query = {}
             view_name = "Overall Data (All Departments)"
             
@@ -152,7 +136,7 @@ def dashboard():
                 db_query = {"dept": admin_dept}
                 view_name = admin_dept
 
-            # --- Calculate Stats for the Assigned Department ---
+            # Calculate Stats (Present means fully verified)
             total_students = users_collection.count_documents(db_query)
             students_present = users_collection.count_documents({**db_query, "status": "PRESENT"})
             attendance_rate = round((students_present / total_students) * 100, 1) if total_students > 0 else 0
@@ -163,9 +147,14 @@ def dashboard():
             ]))
             total_parents = parent_agg[0]['total_parents'] if parent_agg else 0
 
-            # --- Fetch Individual Student Roster ---
+            # Fetch Individual Student Roster
             student_cursor = users_collection.find(db_query).sort("name", 1)
-            student_list = list(student_cursor)
+            
+            # Format the _id as a string so we can pass it safely to the HTML template
+            student_list = []
+            for student in student_cursor:
+                student['_id_str'] = str(student['_id'])
+                student_list.append(student)
 
             return render_template('dashboard.html', 
                                    total_students=total_students, 
@@ -178,6 +167,20 @@ def dashboard():
             return render_template('login.html', error="Invalid username or password.")
 
     return render_template('login.html')
+
+# --- NEW: ADMIN VERIFICATION API ---
+@app.route('/mark_present/<student_id>', methods=['POST'])
+def mark_present(student_id):
+    """Background route for the admin 'Verify' button."""
+    try:
+        users_collection.update_one(
+            {"_id": ObjectId(student_id)},
+            {"$set": {"status": "PRESENT"}}
+        )
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 
 if __name__ == '__main__':
     setup_default_admin()

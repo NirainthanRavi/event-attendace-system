@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <meta name="theme-color" content="#0B0E1A"/>
   <title>Instructions – SRM Induction 2026</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <!-- Linking to the unified stylesheet -->
+  
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="induction-page instructions-page">
@@ -95,6 +96,7 @@
 
   let gone = false;
   let ready = false;
+  // 1.2 second delay before taps are registered, preventing accidental immediate click-throughs
   setTimeout(() => { ready = true; }, 1200);
 
   function go(x, y) {
@@ -102,6 +104,8 @@
     gone = true;
     ripple(x, y);
     document.getElementById('overlay').classList.add('on');
+    
+    // Flask url_for injected perfectly into the JS timeout
     setTimeout(() => { window.location.href = "{{ url_for('checkin') }}"; }, 480);
   }
 
